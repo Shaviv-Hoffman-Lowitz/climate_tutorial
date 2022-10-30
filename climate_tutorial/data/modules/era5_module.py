@@ -30,7 +30,7 @@ NAME_TO_VAR = {
 VAR_TO_NAME = {v: k for k, v in NAME_TO_VAR.items()}
 
 class ERA5(Dataset):
-    def __init__(self, root_dir, root_highres_dir, variables, years, min_lat, max_lat, min_lon, max_lon, test_lat_start, test_lon_start, split = 'train'):
+    def __init__(self, root_dir, root_highres_dir, variables, years, min_lat, max_lat, min_lon, max_lon, val_lat_start, val_lon_start, test_lat_start, test_lon_start, split = 'train'):
         super().__init__()
         self.root_dir = root_dir
         self.root_highres_dir = root_highres_dir
@@ -40,6 +40,8 @@ class ERA5(Dataset):
         self.max_lat = max_lat
         self.min_lon = min_lon
         self.max_lon = max_lon
+        self.val_lat_start = val_lat_start
+        self.val_lon_start = val_lon_start
         self.test_lat_start = test_lat_start
         self.test_lon_start = test_lon_start
         self.split = split
@@ -60,11 +62,19 @@ class ERA5(Dataset):
                 xr_data = xr.open_mfdataset(ps, combine='by_coords')
                 
                 lat_difference = self.max_lat - self.min_lat
+                if self.val_lat_start is not None:
+                    self.min_lat = self.val_lat_start
+                    self.max_lat = self.val_lat_start + lat_difference
+                
+                lon_difference = self.max_lon - self.min_lon
+                if self.val_lon_start is not None:
+                    self.min_lon = self.val_lon_start
+                    self.max_lon = self.val_lon_start + lon_difference
+                
                 if self.test_lat_start is not None:
                     self.min_lat = self.test_lat_start
                     self.max_lat = self.test_lat_start + lat_difference
                 
-                lon_difference = self.max_lon - self.min_lon
                 if self.test_lon_start is not None:
                     self.min_lon = self.test_lon_start
                     self.max_lon = self.test_lon_start + lon_difference
