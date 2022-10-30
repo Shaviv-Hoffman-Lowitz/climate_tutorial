@@ -34,6 +34,8 @@ class DataModule(LightningDataModule):
         max_lon = 360,
         # test_lat_start = 0,
         # test_lon_start = 0,
+        val_lat_start = None,
+        val_lon_start = None,
         test_lat_start = None,
         test_lon_start = None,
         batch_size = 64,
@@ -55,14 +57,14 @@ class DataModule(LightningDataModule):
         caller = eval(f"{dataset.upper()}{task_string}{custom}")
         
         train_years = range(train_start_year, val_start_year)
-        self.train_dataset = caller(root_dir, root_highres_dir, in_vars, out_vars, pred_range.hours(), train_years, min_lat, max_lat, min_lon, max_lon, None, None, subsample.hours(), "train")
+        self.train_dataset = caller(root_dir, root_highres_dir, in_vars, out_vars, pred_range.hours(), train_years, min_lat, max_lat, min_lon, max_lon, None, None, None, None, subsample.hours(), "train")
 
         val_years = range(val_start_year, test_start_year)
-        self.val_dataset = caller(root_dir, root_highres_dir, in_vars, out_vars, pred_range.hours(), val_years, min_lat, max_lat, min_lon, max_lon, None, None, subsample.hours(), "val")
+        self.val_dataset = caller(root_dir, root_highres_dir, in_vars, out_vars, pred_range.hours(), val_years, min_lat, max_lat, min_lon, max_lon, val_lat_start, val_lon_start, None, None, subsample.hours(), "val")
         self.val_dataset.set_normalize(self.train_dataset.inp_transform, self.train_dataset.out_transform)
 
         test_years = range(test_start_year, end_year + 1)
-        self.test_dataset = caller(root_dir, root_highres_dir, in_vars, out_vars, pred_range.hours(), test_years, min_lat, max_lat, min_lon, max_lon, test_lat_start, test_lon_start, subsample.hours(), "test")
+        self.test_dataset = caller(root_dir, root_highres_dir, in_vars, out_vars, pred_range.hours(), test_years, min_lat, max_lat, min_lon, max_lon, None, None, test_lat_start, test_lon_start, subsample.hours(), "test")
         self.test_dataset.set_normalize(self.train_dataset.inp_transform, self.train_dataset.out_transform)
 
     def get_lat_lon(self):
