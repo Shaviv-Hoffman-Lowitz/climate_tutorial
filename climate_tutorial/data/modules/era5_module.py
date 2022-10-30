@@ -176,9 +176,9 @@ class ERA5Forecasting(ERA5):
         return len(self.inp_data)
 
 class ERA5ForecastingCustom(ERA5):
-    def __init__(self, root_dir, root_highres_dir, in_vars, out_vars, pred_range, years, min_lat, max_lat, min_lon, max_lon, test_lat_start, test_lon_start, subsample=1, split='train'):
+    def __init__(self, root_dir, root_highres_dir, in_vars, out_vars, pred_range, years, min_lat, max_lat, min_lon, max_lon, val_lat_start, val_lon_start, test_lat_start, test_lon_start, subsample=1, split='train'):
         print (f'Creating {split} dataset')
-        super().__init__(root_dir, root_highres_dir, in_vars, years, min_lat, max_lat, min_lon, max_lon, test_lat_start, test_lon_start, split)
+        super().__init__(root_dir, root_highres_dir, in_vars, years, min_lat, max_lat, min_lon, max_lon, val_lat_start, val_lon_start, test_lat_start, test_lon_start, split)
         
         self.in_vars = in_vars
         self.out_vars = out_vars
